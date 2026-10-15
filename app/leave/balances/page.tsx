@@ -8,6 +8,14 @@ import {
   ErrorState,
   LoadingBlock,
 } from "@/components/shared/page-states";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getMyBalances } from "@/lib/services/leave-service";
 import { useSession } from "@/lib/session/session-context";
 
@@ -53,30 +61,28 @@ export default function LeaveBalancesPage() {
         <EmptyState title="No leave balances" />
       ) : null}
       {!noProfile && balances.length > 0 ? (
-        <div className="overflow-x-auto rounded-lg border">
-          <table className="w-full min-w-[480px] text-sm">
-            <thead className="bg-muted/50 text-left">
-              <tr>
-                <th className="p-3 font-medium">Type</th>
-                <th className="p-3 font-medium">Entitled</th>
-                <th className="p-3 font-medium">Used</th>
-                <th className="p-3 font-medium">Pending</th>
-                <th className="p-3 font-medium">Available</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {balances.map((b) => (
-                <tr key={b.leaveTypeId}>
-                  <td className="p-3 font-medium">{b.leaveTypeName}</td>
-                  <td className="p-3">{b.entitled}</td>
-                  <td className="p-3">{b.used}</td>
-                  <td className="p-3">{b.pending}</td>
-                  <td className="p-3 font-semibold">{b.available}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Table className="min-w-[480px]">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead>Type</TableHead>
+              <TableHead>Entitled</TableHead>
+              <TableHead>Used</TableHead>
+              <TableHead>Pending</TableHead>
+              <TableHead>Available</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {balances.map((b) => (
+              <TableRow key={b.leaveTypeId}>
+                <TableCell className="font-medium">{b.leaveTypeName}</TableCell>
+                <TableCell>{b.entitled}</TableCell>
+                <TableCell>{b.used}</TableCell>
+                <TableCell>{b.pending}</TableCell>
+                <TableCell className="font-semibold">{b.available}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       ) : null}
     </AppShell>
   );

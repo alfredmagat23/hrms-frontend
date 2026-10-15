@@ -3,17 +3,26 @@
 Labels used below:
 
 - **[verified in repo]** — Confirmed from current files/implementation.
-- **[from owner]** — Owner-provided; not necessarily implemented.
+- **[from owner]** — Owner-approved direction; not necessarily implemented.
 - **[assumed]** — Temporary interpretation needing owner confirmation.
+- **[need confirmation]** — Explicitly unresolved; do not invent an answer.
 
 ---
 
 ## 1. Document Purpose
 
 Living context for Cursor sessions working in `tls-hrms-web`. Prefer this
-file for product flows, built status, mock architecture, and boundaries.
+file for product flows, built status, repository boundaries, approved
+production architecture direction, and frontend design *authority*
+pointers.
+
 Prefer `AGENTS.md` for short always-on working rules. Prefer parent
 `HRMS/AGENTS.md` for workspace-wide repository boundaries.
+
+**Visual design authority:** `docs/DESIGN_SYSTEM.md` is the authoritative
+frontend visual-design document. This file must not duplicate or replace
+it. Future UI work must align with `DESIGN_SYSTEM.md` and TLS Brand
+Guidelines [from owner].
 
 ## 2. Product Purpose
 
@@ -32,8 +41,22 @@ category [from owner].
 
 ## 3. Current Phase
 
-Front-end-only mock demo. No production backend, database, real auth, file
-storage, or deployment pipeline in this repository [verified in repo].
+Front-end-only mock demo for workflow, UX, and HRMS process validation
+[from owner] / [verified in repo].
+
+Present in this repository [verified in repo]:
+
+- Next.js frontend, React 19, Tailwind CSS v4
+- Radix-based / shadcn-style component architecture
+- Geist typography
+- Typed mock services; mock authentication and authorization
+- Fictional HRMS data; versioned `localStorage` persistence
+
+Not present in this repository [verified in repo]:
+
+- Production backend, production database, production file storage
+- Production API integration, real authentication provider
+- Deployment pipeline
 
 Do not build the production backend during the current frontend-demo phase
 [from owner].
@@ -43,12 +66,33 @@ Do not build the production backend during the current frontend-demo phase
 | Item | Detail | Label |
 |------|--------|-------|
 | Framework | Next.js 16.4.0 (App Router) | [verified in repo] |
-| UI | React 19.3.0, Tailwind 4, Radix/shadcn-style components | [verified in repo] |
+| UI runtime | React 19.3.0 | [verified in repo] |
+| Styling | Tailwind CSS 4 + Turbopack CSS loader | [verified in repo] |
+| Components | Radix + shadcn-style architecture (`components/ui`, `components.json`) | [verified in repo] |
+| Typography | Geist + Geist Mono (`app/layout.tsx`) | [verified in repo] |
 | Language | TypeScript strict (`tsconfig.json`) | [verified in repo] |
 | Lint | `eslint.config.mjs` + `eslint-config-next` | [verified in repo] |
 | Tests | Vitest 3 + happy-dom (`vitest.config.ts`, `lib/**/*.test.ts`) | [verified in repo] |
 | Data | Browser `localStorage` mock store, `STORE_VERSION = 3` | [verified in repo] |
+| Auth | Mock session only (`lib/session`, `session-service`) | [verified in repo] |
 | API routes | None under `app/api` | [verified in repo] |
+
+### Frontend design foundation [from owner]
+
+Approved UI foundation: **TLS-branded shadcn** — Next.js, Tailwind CSS,
+shadcn/ui, Radix UI, TLS Brand Guidelines, and `DESIGN_SYSTEM.md`.
+
+- Continue the existing shadcn/ui ecosystem; do not migrate away from it.
+- Reuse and extend existing shadcn/Radix patterns before inventing custom
+  alternatives; preserve accessibility benefits.
+- Layer TLS branding (colors, identity, visual language, enterprise HRMS
+  appearance) on top of the shadcn foundation.
+- Do not replace the foundation with Material UI, Ant Design, Chakra,
+  Mantine, Bootstrap, Tailwind UI redesigns, or other competing systems.
+
+Any `npx shadcn@latest init …` preset usage is a **frontend
+implementation detail** only — not a branding, architecture, or
+infrastructure decision [from owner].
 
 ## 5. Workspace and Repository Boundaries
 
@@ -94,8 +138,10 @@ Selected future backend: FastAPI, Python, modular monolith, PostgreSQL,
 separate `tls-hrms-api` [from owner]. Do not document Laravel, .NET, or
 NestJS as selected unless the owner changes that decision.
 
-Proposed hosting [from owner]: Vercel (Next.js), Render (FastAPI),
-Supabase PostgreSQL + Storage.
+**Hosting / data platform [from owner]:** Production uses
+**company-controlled infrastructure**. Managed cloud hosting (including
+previous proposals of Vercel, Render, and Supabase) is **not** the
+approved production direction. See §19.
 
 ## 6. Users and Current Roles
 
@@ -298,21 +344,21 @@ Legacy `/employee/*` and most `/hr/*` redirect to the above.
 | HR leave approval | Built | approve/reject HR stage | Browser-only | Server enforcement |
 | Head-of-HR approval | Partial | seed final approval only | No live Head-of-HR UI | Role + API stage |
 | Attendance | Built | `attendance.ts` + pages | Mock punches | Biometric/import bridge |
-| Documents | Built | `document-service`, fixtures | No real files | Object storage |
+| Documents | Built | `document-service`, fixtures | No real files | Company-controlled file storage [from owner] |
 | Forms | Built | `forms-service`, fixtures | No form engine | Forms backend |
 | Workflows | Built | `workflow-service`, fixtures | Dashboard mock | Workflow engine |
 | Expenses | Built | `expense-service`, fixtures | No payments | Expense API |
 | OKR | Built | `okr-service`, fixtures | Display only | OKR API |
 | Settings | Built | `/hr/settings/*`, `settings-service` | Company mock refs | Config API |
-| Mock services | Built | `lib/services/*` | Intentional | Replace with HTTP adapters |
+| Mock services | Built | `lib/services/*` | Intentional | Versioned REST adapters over HTTPS |
 | Browser persistence | Built | `lib/mock/store.ts` v3 | Not secure | Server DB |
 | Automated tests | Built | 5 files under `lib/**/*.test.ts` | Unit/domain only | E2E + contract tests |
 | Backend API | Not started | `tls-hrms-api` absent | — | FastAPI modular monolith |
-| PostgreSQL | Not started | — | — | Supabase/Postgres [from owner] |
+| PostgreSQL | Not started | — | — | Company-controlled PostgreSQL [from owner] |
 | Real authentication | Not started | — | — | Backend sessions/tokens |
-| File storage | Not started | — | — | Supabase Storage [from owner] |
+| File storage | Not started | — | — | Protected internal storage on company infrastructure [from owner] |
 | Biometric attendance bridge | Not started | — | — | Import workers |
-| Deployment | Not started | — | — | Vercel + Render [from owner] |
+| Deployment | Not started | — | — | Company-controlled infrastructure [from owner] |
 
 Status vocabulary: Built | Partial | Not started | Needs confirmation.
 
@@ -334,13 +380,58 @@ lack a backend.
 
 ## 19. Future Production Architecture
 
-[from owner]
+All items in this section are **[from owner]** unless noted.
 
-- Frontend: `tls-hrms-web` (Next.js) → proposed Vercel
-- Backend: `tls-hrms-api` FastAPI modular monolith → proposed Render
-- Data: PostgreSQL + Storage (proposed Supabase)
-- Auth, authorization, company scope, validation, audit on server
-- Keep repositories separate; no NestJS/Laravel/.NET as selected stack
+### Applications
+
+- Frontend: `tls-hrms-web` (Next.js) — separate repository
+- Backend: `tls-hrms-api` — FastAPI modular monolith, separate repository
+- Frontend and backend remain separate applications even if deployed on the
+  same company-controlled infrastructure
+- Auth, authorization, company scope, validation, and audit on the server
+- Do not select NestJS, Laravel, or .NET unless the owner changes this
+
+### Hosting
+
+- **Company-controlled infrastructure** is the approved production direction
+- **Render is not** part of the approved production architecture
+- **Managed cloud hosting** (including prior Vercel / Render / Supabase
+  hosting proposals) is **not** the approved production direction
+
+### Database
+
+- PostgreSQL remains approved
+- **Supabase is not** the approved PostgreSQL provider
+- Production PostgreSQL runs on company-approved infrastructure
+
+### File storage
+
+- **Supabase Storage is not** the approved storage platform
+- Approved direction: protected internal file storage on
+  company-controlled infrastructure
+
+### Integration
+
+- Initial frontend–backend communication: **versioned REST APIs over HTTPS**
+
+### Scalability (not initially required)
+
+Do not introduce the following unless justified by verified requirements:
+
+- Redis, WebSockets, Kubernetes, microservices, message brokers, event buses
+
+### Frontend design direction (authority pointers only)
+
+- Visual rules live in `docs/DESIGN_SYSTEM.md` (authoritative) and TLS Brand
+  Guidelines — not in this document
+- Approved foundation: TLS-branded shadcn (see §4)
+- Existing design system in-repo should be **evolved**, not replaced
+- Product appearance: professional, structured, enterprise-focused, calm,
+  information-dense, trustworthy, internally branded
+
+Palette / brand conflicts between `DESIGN_SYSTEM.md`, TLS Brand Guidelines,
+and live tokens (e.g. primary `#0D47A1` vs TLS digital blue `#0963C6`) are
+**[need confirmation]** — do not resolve here.
 
 ## 20. Explicitly Out of Scope for the Current Frontend
 
@@ -352,6 +443,8 @@ lack a backend.
 - New modules/features not requested
 - Git init/commit/push/deploy unless owner asks
 - Claiming production security from client checks
+- Migrating away from shadcn/ui to another component system [from owner]
+- Replacing `DESIGN_SYSTEM.md` with ad-hoc visual directions in this file
 
 ## 21. Decisions Already Made
 
@@ -369,19 +462,58 @@ lack a backend.
 - Future backend = FastAPI modular monolith + PostgreSQL [from owner]
 - Frontend/backend separate repositories [from owner]
 - No production backend during frontend-demo phase [from owner]
+- Company-controlled infrastructure for production hosting, PostgreSQL, and
+  protected file storage; Render / Vercel / Supabase not approved [from owner]
+- Initial API style: versioned REST over HTTPS [from owner]
+- Redis / WebSockets / Kubernetes / microservices / brokers not initially
+  required [from owner]
+- UI foundation remains TLS-branded shadcn; `DESIGN_SYSTEM.md` is visual
+  authority; TLS Brand Guidelines apply [from owner]
 
 ## 22. Open Questions
+
+### Product / demo
 
 - Half-day attendance late/undertime policy (currently not calculated)
   [from owner] / [verified in repo implementation]
 - Exact future placement of database migrations (`database/` vs
-  `tls-hrms-api`) — not confirmed [assumed: TBD until owner decides]
+  `tls-hrms-api`) — [need confirmation]
 - When to initialize Git for `tls-hrms-web` and create `tls-hrms-api`
   [assumed: owner-driven]
 - Timing/priority for Manager, Head of HR, Accounting, Admin roles
   [from owner planned; schedule unknown]
 - Whether parent `docs/` / `architecture/` / `database/` folders will be
   created soon [assumed: when owner requests]
+
+### Infrastructure [need confirmation]
+
+- Server OS; physical vs virtual machine; shared vs dedicated
+- CPU / memory / storage / network sizing
+- Internet-facing vs VPN-only vs internal-only deployment
+
+### Deployment [need confirmation]
+
+- Reverse proxy selection (e.g. Nginx, Caddy)
+- Docker Compose vs systemd (or other) deployment model
+- Production CI/CD
+
+### Operations [need confirmation]
+
+- PostgreSQL administration model
+- Backup tooling, destination, restore procedures, recovery objectives
+- Monitoring and alerting platforms
+
+### Ownership [need confirmation]
+
+- Domain, DNS, and TLS certificate ownership
+- Emergency administrative access
+
+### Frontend design [need confirmation]
+
+- Whether `DESIGN_SYSTEM.md` or TLS Brand Guidelines is final when palette
+  differences exist
+- Whether current primary token `#0D47A1` remains or aligns with TLS digital
+  blue `#0963C6`
 
 ## 23. Safe Change Checklist
 

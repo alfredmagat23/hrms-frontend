@@ -18,7 +18,16 @@ import {
   StatusBadge,
 } from "@/components/shared/page-states";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { hasCapability } from "@/lib/auth/capabilities";
 import {
   getPeopleFilterOptions,
@@ -229,36 +238,36 @@ export default function PeoplePage() {
 
         {employees.length > 0 ? (
           <>
-            <div className="hidden overflow-x-auto rounded-lg border md:block">
-              <table className="w-full min-w-[720px] text-sm">
-                <thead className="bg-muted/50 text-left">
-                  <tr>
-                    <th className="p-3 font-medium">Employee</th>
-                    <th className="p-3 font-medium">Company</th>
-                    <th className="p-3 font-medium">Department</th>
-                    <th className="p-3 font-medium">Team</th>
-                    <th className="p-3 font-medium">Position</th>
-                    <th className="p-3 font-medium">Status</th>
-                    <th className="p-3 font-medium" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
+            <div className="hidden md:block">
+              <Table className="min-w-[720px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Employee</TableHead>
+                    <TableHead>Company</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Team</TableHead>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="w-24" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {employees.map((e) => (
-                    <tr key={`${e.id}-${e.companyId}`}>
-                      <td className="p-3">
+                    <TableRow key={`${e.id}-${e.companyId}`}>
+                      <TableCell>
                         {e.firstName} {e.lastName}
-                      </td>
-                      <td className="p-3">{e.companyName}</td>
-                      <td className="p-3">{e.departmentName}</td>
-                      <td className="p-3">{e.team}</td>
-                      <td className="p-3">{e.positionName}</td>
-                      <td className="p-3">
+                      </TableCell>
+                      <TableCell>{e.companyName}</TableCell>
+                      <TableCell>{e.departmentName}</TableCell>
+                      <TableCell>{e.team}</TableCell>
+                      <TableCell>{e.positionName}</TableCell>
+                      <TableCell>
                         <StatusBadge
                           label={e.statusLabel}
                           tone={statusTone(e.statusLabel)}
                         />
-                      </td>
-                      <td className="p-3 text-right">
+                      </TableCell>
+                      <TableCell className="text-right">
                         <Button variant="outline" size="sm" asChild>
                           <Link
                             href={`/people/${e.id}?company=${e.companyId}`}
@@ -266,37 +275,38 @@ export default function PeoplePage() {
                             View
                           </Link>
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
             <ul className="space-y-3 md:hidden">
               {employees.map((e) => (
-                <li
-                  key={`${e.id}-${e.companyId}`}
-                  className="rounded-lg border bg-card p-3 text-sm"
-                >
-                  <p className="font-medium">
-                    {e.firstName} {e.lastName}
-                  </p>
-                  <p className="mt-1">{e.companyName}</p>
-                  <p>
-                    {e.departmentName} · {e.team}
-                  </p>
-                  <p>{e.positionName}</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <StatusBadge
-                      label={e.statusLabel}
-                      tone={statusTone(e.statusLabel)}
-                    />
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/people/${e.id}?company=${e.companyId}`}>
-                        View
-                      </Link>
-                    </Button>
-                  </div>
+                <li key={`${e.id}-${e.companyId}`}>
+                  <Card>
+                    <CardContent className="p-3 text-sm">
+                      <p className="font-medium">
+                        {e.firstName} {e.lastName}
+                      </p>
+                      <p className="mt-1">{e.companyName}</p>
+                      <p>
+                        {e.departmentName} · {e.team}
+                      </p>
+                      <p>{e.positionName}</p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <StatusBadge
+                          label={e.statusLabel}
+                          tone={statusTone(e.statusLabel)}
+                        />
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/people/${e.id}?company=${e.companyId}`}>
+                            View
+                          </Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </li>
               ))}
             </ul>
