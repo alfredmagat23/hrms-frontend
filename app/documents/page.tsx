@@ -10,6 +10,7 @@ import {
   LoadingBlock,
 } from "@/components/shared/page-states";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   listDocumentCategories,
   listDocuments,
@@ -108,27 +117,27 @@ export default function DocumentsPage() {
         ) : null}
         {docs.length > 0 ? (
           <>
-            <div className="hidden overflow-x-auto rounded-lg border md:block">
-              <table className="w-full min-w-[720px] text-sm">
-                <thead className="bg-muted/50 text-left">
-                  <tr>
-                    <th className="p-3 font-medium">Document name</th>
-                    <th className="p-3 font-medium">Category</th>
-                    <th className="p-3 font-medium">Description</th>
-                    <th className="p-3 font-medium">Updated</th>
-                    <th className="p-3 font-medium" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
+            <div className="hidden md:block">
+              <Table className="min-w-[720px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Document name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="w-24" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {docs.map((d) => (
-                    <tr key={d.id}>
-                      <td className="p-3 font-medium">{d.name}</td>
-                      <td className="p-3">{d.category}</td>
-                      <td className="p-3 text-muted-foreground">
+                    <TableRow key={d.id}>
+                      <TableCell className="font-medium">{d.name}</TableCell>
+                      <TableCell>{d.category}</TableCell>
+                      <TableCell className="max-w-xs whitespace-normal text-muted-foreground">
                         {d.description}
-                      </td>
-                      <td className="p-3">{d.updatedAt}</td>
-                      <td className="p-3 text-right">
+                      </TableCell>
+                      <TableCell>{d.updatedAt}</TableCell>
+                      <TableCell className="text-right">
                         <Button
                           variant="outline"
                           size="sm"
@@ -137,31 +146,35 @@ export default function DocumentsPage() {
                         >
                           View
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
             <ul className="space-y-3 md:hidden">
               {docs.map((d) => (
-                <li key={d.id} className="rounded-lg border bg-card p-3 text-sm">
-                  <p className="font-medium">{d.name}</p>
-                  <p className="text-muted-foreground">{d.category}</p>
-                  <p className="mt-1">{d.description}</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {d.updatedAt}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      type="button"
-                      onClick={() => setDemoOpen(true)}
-                    >
-                      View
-                    </Button>
-                  </div>
+                <li key={d.id}>
+                  <Card>
+                    <CardContent className="p-3 text-sm">
+                      <p className="font-medium">{d.name}</p>
+                      <p className="text-muted-foreground">{d.category}</p>
+                      <p className="mt-1">{d.description}</p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          {d.updatedAt}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => setDemoOpen(true)}
+                        >
+                          View
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </li>
               ))}
             </ul>

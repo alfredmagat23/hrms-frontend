@@ -29,6 +29,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSession } from "@/lib/session/session-context";
 import { cn } from "@/lib/utils";
 
@@ -102,6 +108,7 @@ export function AppShell({
   }
 
   return (
+    <TooltipProvider>
     <div className="flex min-h-screen bg-background">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar shadow-[var(--elevation)] lg:flex">
         <div className="flex h-14 shrink-0 items-center gap-3 border-b border-sidebar-border px-4">
@@ -185,9 +192,16 @@ export function AppShell({
               </h1>
             </div>
 
-            <span className="hidden rounded-md border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-950 sm:inline">
-              Demo — mock data
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="hidden cursor-default rounded-md border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-950 sm:inline">
+                  Demo — mock data
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                Fictional data only — not connected to production systems
+              </TooltipContent>
+            </Tooltip>
 
             <div className="hidden items-center gap-2 md:flex">
               {companies.length > 1 ? (
@@ -255,6 +269,7 @@ export function AppShell({
         </main>
       </div>
     </div>
+    </TooltipProvider>
   );
 }
 

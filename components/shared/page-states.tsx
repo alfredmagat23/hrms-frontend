@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function LoadingBlock({ label = "Loading…" }: { label?: string }) {
   return (
-    <div
-      role="status"
-      className="rounded-lg border bg-card p-6 text-sm text-muted-foreground"
-    >
-      {label}
+    <div role="status" aria-busy="true" aria-label={label} className="space-y-3">
+      <span className="sr-only">{label}</span>
+      <Skeleton className="h-4 w-1/3" />
+      <Skeleton className="h-24 w-full" />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full" />
+      </div>
     </div>
   );
 }
